@@ -10,7 +10,7 @@
         {'key':'关键字'}
     2.只使用百度
         {'key':'关键字','spider':'baidu'}
-    3.只是用google
+    3.只使用google
         {'key':'关键字','spider':'google'}
 
     例子
