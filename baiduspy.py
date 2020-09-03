@@ -117,7 +117,7 @@ class Crawljson():
 
 def main(key):
     if key !=None:
-        Crawl =Crawljson(key,'100')
+        Crawl =Crawljson(key,'10')
         Crawl.run()
     else:
         print('baiduspy:缺少关键字')

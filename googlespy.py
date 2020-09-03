@@ -50,7 +50,7 @@ class Crawlhtml():
                 driver.find_element_by_css_selector('[value="显示更多搜索结果"]').click()
                 print('click more')
             except:
-                break #测试用
+                #break #测试用
                 pass
             try:
                 driver.find_element_by_css_selector('[data-status="3"]').click()
