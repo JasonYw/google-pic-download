@@ -1,6 +1,5 @@
 from http.client import responses
 from os import times
-from threading import TIMEOUT_MAX
 import requests
 from bs4 import BeautifulSoup
 import urllib
@@ -15,6 +14,29 @@ import threading
 from queue import Queue
 import socket
 socket.setdefaulttimeout(5)
+
+# class baidu_downloader(threading.Thread):
+#     def __init__(self,threadname,linkqueue,key,Lock):
+#         super(baidu_downloader,self).__init__()
+#         self.linkqueue =linkqueue
+#         self.key =key
+#         self.threadname =threadname
+#         self.Lock =Lock
+
+#     def run(self):
+#         print('start:',self.threadname)
+#         try:
+#             link =self.linkqueue.get(False)
+#             downloader =Crawljson(self.key)
+#             with self.Lock:
+#                 downloader.Downloader(link)
+#         except Exception as e:
+#             print(e)
+            
+
+        
+
+
 class Crawljson():
     def __init__(self,key,page=100):
         self.key =key
@@ -30,6 +52,11 @@ class Crawljson():
             os.mkdir(self.path)
 
     def run(self):
+        Downloadthreadname =['Download1','Download2','Download3','Download4','Download5']
+        linkqueue =Queue()
+        junk_Downloadthreadnamelist=[]
+        Lock =threading.Lock()
+
         if self.page >0:
             for i in range(1,self.page+1):
                 if not self.geturl(i):
@@ -38,31 +65,42 @@ class Crawljson():
         self.imagelist =list(set(self.imagelist))
         self.totallink =len(self.imagelist)
         print('finding img_link:',self.totallink)
+        starttime =time.time()
         if len(self.imagelist):
             for i in self.imagelist:
                 self.Downloader(i)
         else:
             print('no page')
+        endtime =time.time()
+        print('总用时:',endtime-starttime)
         
         '''
             add thread
         '''
-        # Downloadthreadname =['Download1','Download2','Download3','Download4','Download5']
-        # linkqueue =Queue()
-        # junk_Downloadthreadnamelist=[]
 
-        # for i in self.imagelist:
-        #     linkqueue.put(i)
-        
+        # if len(self.imagelist):
+        #     for i in self.imagelist:
+        #         linkqueue.put(i)
+        # else:
+        #     print('no page')
+
+        # starttime =time.time()
         # while not linkqueue.empty():
-        #     for i in range(0,5):
+        #     for threadname in Downloadthreadname:
         #         try:
         #             link =linkqueue.get(False)
-        #             thread =threading.Thread(target=self.Downloader,args=(link,))
+        #             thread =threading.Thread(target=self.Downloader,args=(link,threadname,Lock,))
         #             thread.start()
-        #             #thread.join()
+        #             junk_Downloadthreadnamelist.append(thread)
         #         except Exception as e:
-        #             break
+        #             print(e)
+        
+        
+        # for thread_ in junk_Downloadthreadnamelist:
+        #     thread_.join()
+        # endtime =time.time()
+        # print('总用时:',endtime-starttime)
+
     
   
 
@@ -90,15 +128,25 @@ class Crawljson():
             print(e)
         return True
     
-    def Downloader(self,url):
-        path =self.path+'/'+self.key+'_'+str(self.count)+'.jpg'
+    def Downloader(self,url,threadname="",Lock=None):
+      
+        print(threadname,": start")
+        # path =self.path+'/'+self.key+'_'+str(self.count)+'.jpg'
         try:
-            urllib.request.urlretrieve(url=url,filename=path,reporthook=self.downloadinform,data=None)
-            print('downloading img',self.count+1,'/',self.totallink)
+            if Lock != None:
+                with Lock:
+                    path =self.path+'/'+self.key+'_'+str(self.count)+'.jpg'
+                    urllib.request.urlretrieve(url=url,filename=path,reporthook=self.downloadinform,data=None)
+                    self.count =self.count+1
+                print('thread_downloading img',self.count+1,'/',self.totallink)
+            else:
+                path =self.path+'/'+self.key+'_'+str(self.count)+'.jpg'
+                urllib.request.urlretrieve(url=url,filename=path,reporthook=self.downloadinform,data=None)
+                self.count =self.count+1
+                print('downloading img',self.count+1,'/',self.totallink)
         except Exception as e:
             print(e)
-        self.count =self.count+1
-        
+    
 
     def progressbar(self,cur):
         total =100
