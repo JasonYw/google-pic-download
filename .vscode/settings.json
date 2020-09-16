@@ -1,5 +1,9 @@
 {
     "workbench.colorCustomizations": {
     
-    }
+    },
+    "terminal.integrated.fontFamily": "Fira Code",
+    "terminal.integrated.fastScrollSensitivity": 1,
+    "files.autoSave": "onFocusChange",
+    "terminal.integrated.fontSize": 14
 }

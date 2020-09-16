@@ -1,9 +1,5 @@
-from http.client import responses
-from os import times
 import requests
 from bs4 import BeautifulSoup
-import urllib
-from requests.sessions import session 
 import json
 import urllib.request
 import sys
@@ -32,10 +28,6 @@ socket.setdefaulttimeout(5)
 #                 downloader.Downloader(link)
 #         except Exception as e:
 #             print(e)
-            
-
-        
-
 
 class Crawljson():
     def __init__(self,key,page=100):
